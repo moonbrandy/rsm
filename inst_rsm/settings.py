@@ -119,27 +119,27 @@ WSGI_APPLICATION = 'inst_rsm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'rsm',
-#         'USER': 'rsm_user',
-#         'PASSWORD': 'rsm_password',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'rsm',
+        'USER': 'rsm_user',
+        'PASSWORD': 'rsm_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 # if GIS_ENABLED:
 #     DEFAULT_DB = 'spatialite'
 # else:
-DEFAULT_DB = 'sqlite'
+# DEFAULT_DB = 'sqlite'
 
-DATABASES = {
-    'default': ENV.db(default='%s:///%s' % (DEFAULT_DB,
-                                            INST_ROOT('database.sqlite'))
-                     ),
-}
+# DATABASES = {
+#     'default': ENV.db(default='%s:///%s' % (DEFAULT_DB,
+#                                             INST_ROOT('database.sqlite'))
+#                      ),
+# }
 
 
 # Internationalization
