@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}Edit Permissions for {{ ruser.get_full_name }}{% endblock %}
+
+{% block content %}
+<h1>Edit Permissions for {{ ruser.get_full_name }}</h1>
+
+<p>Set the groups {{ ruser.get_full_name }} should be a member of to receive those permissions.</p>
+
+<form method='post'>{% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button class="btn btn-primary" type="submit">Commit Changes</button>
+    {% endbuttons %}
+</form>
+
+{% endblock %}
+

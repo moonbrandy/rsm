@@ -1,0 +1,10 @@
+You have been invited to {{ site_name }}.
+
+To get started you need to reset your password. Follow the link below:
+{{ protocol}}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+You will then be able to log in at {{ protocol}}://{{ domain }}/ with your email
+address {{ email }} and the new password you just set up.
+
+Regards
+The software and admins of {{ site_name }}

@@ -1,0 +1,9 @@
+{% extends 'widget-base.html' %}
+{% block title %}Logged out - Analytics Hub{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Logged Out</h1>
+</div>
+    <p>You have been logged out. Do you want to <a href="{% url 'login' %}">login again</a>?</p>
+{% endblock %}

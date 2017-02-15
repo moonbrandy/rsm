@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Company User List{% endblock %}
+{% block content %}
+<h1>Company User List</h1>
+
+
+<p><strong>Company user list for {{ user.email }}</strong></p>
+
+<table class="table table-bordered">
+    <thead>
+	<tr>
+		<th>Full name</th>
+		<th>Email</th>
+		<th>Last login</th>
+		<th>Is active</th>
+		<th>Edit account details</th>
+	</tr>
+    </thead>
+    <tbody>
+	{% for user in user_list %}
+    {%if user.is_active %}<tr class="active">{% else %}<tr>{% endif %}
+		<td>{{ user.get_full_name}}</td>
+		<td>{{user.email}}</td>
+		<td>{% if user.last_login == user.date_joined or not user.last_login %}---Never logged in---{% else %}{{user.last_login}}{% endif %}</td>
+		<td>{{user.is_active}}</td>
+		<td><a class="btn btn-default" href="{% url 'usermanagement_edit' user.id %}" role="button">Edit user details</a>
+			<a class="btn btn-default" href="{% url 'usermanagement_reset' user.id %}" role="button">Reset user password</a>
+			<a class="btn btn-default" href="{% url 'usermanagement_permission' user.id %}" role="button">Edit Permissions</a></td>
+		</tr>
+	{% endfor %}
+    </tbody>
+</table>
+
+
+<p><a href="{% url 'usermanagement_add' %}" class="btn btn-primary">Create new user</a>
+<a href="{% url 'usermanagement_mass_reset' %}" class="btn btn-primary">Mass password reset</a></p>
+{% endblock %}

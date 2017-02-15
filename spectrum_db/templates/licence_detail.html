@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Licence Detail{% endblock %}
+
+{% block extrahead %}
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+	<table class="table table-hover">
+		<tbody>
+			<h3>Basic Details</h3>
+			<tr>
+				<td><b>Licensee</b></td>
+				<td id="licensee"></td>
+				<td><b>Licence Status</b></td>
+				<td id='status'></td>
+			</tr>
+
+			<tr>
+				<td><b>Licence Type</b></td>
+				<td id='licenceType'></td>
+				<td><b>Fixed Term</b></td>
+				<td id='fixedTerm'></td>
+			</tr>
+			<tr>
+				<td><b>Licence ID</b></td>
+				<td id='licenceId'></td>
+				<td><b>Commencement</b></td>
+				<td id='commencementDate'></td>
+			</tr>
+			<tr>
+				<td><b>Application ID</b></td>
+				<td id='applicationId'></td>
+				<td><b>Expiry</b></td>
+				<td id='expiryDate'></td>
+			</tr>
+			<tr>
+				<td><b>Licence Number</b></td>
+				<td id='licenceNumber'></td>
+				<td><b>Mgmt. Right ID</b></td>
+				<td id='mrid'></td>
+			</tr>
+		</tbody>
+	</table>
+	<table class="table table-hover">
+		<tbody id='spectrums'>
+			<h3>Spectrum Details</h3>
+			<tr>
+				<td><b>Low (MHz)</b></td>
+				<td><b>High (MHz)</b></td>
+				<td><b>Ref. Freq. (MHz)</b></td>
+				<td><b>Power dBW (eirp)</b></td>
+				<td><b>Emission</b></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div id="map" style="height: 400px;width: 100%;"></div>
+
+<div id="error_message"></div>
+
+{% endblock %}
+
+{% block extrascript %}
+<!-- Include Data Tables -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatables.min.css' %}"/>
+<script src="{% static 'js/datatables.min.js' %}"></script>
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ GMAPI }}&callback=initMap">
+    </script>
+<script type="text/javascript">
+var data = '{{ data | escapejs }}';
+data = JSON.parse(data);
+console.log(data);
+
+var extra_info = '{{ extra_info | escapejs }}';
+extra_info = JSON.parse(extra_info);
+console.log(extra_info);
+
+function missingValue(data){
+	if(data == null){
+		return "";
+	}else{
+		return data;
+	}
+}
+
+function initMap() {
+	var map = new google.maps.Map(document.getElementById('map'), {
+  		zoom: 8,
+  		center: extra_info[1].location
+	});
+
+	var markers = extra_info.map(function(info, i) {
+		var icon_url = "";
+		var extra_tooltip = "";
+
+		if(info.tooltip.type == "REC"){
+			icon_url = "https://maps.gstatic.com/mapfiles/ms2/micons/picnic.png";
+			// icon_url="http://www.clker.com/cliparts/V/N/I/r/D/5/dipole-antenna-th.png";
+			extra_tooltip = '<tr>'+
+				            '<td><b>MPIS</b></td>'+
+				            '<td>'+ info.tooltip.mpis + " " + info.tooltip.mpisUom+ '</td>'+
+				            '</tr>';
+		} else if (info.tooltip.type == "TRN") {
+			icon_url = "https://maps.gstatic.com/mapfiles/ms2/micons/campfire.png";
+			// icon_url="http://www.clker.com/cliparts/C/4/S/i/A/u/radio-transmitter-th.png";
+			extra_tooltip = "";
+		} 
+
+		var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h1 class="firstHeading">'+info.tooltip.name+'</h1>'+
+            '<div class="table-responsive">'+
+            '<table class="table">'+
+            '<tbody>'+
+            '<tr>'+
+            '<td><b>Type</b></td>'+
+            '<td>'+ info.tooltip.type + '</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><b>District</b></td>'+
+            '<td>'+ info.tooltip.district + '</td>'+
+            '</tr>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><b>Height</b></td>'+
+            '<td>'+ info.tooltip.height + '</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><b>ID</b></td>'+
+            '<td>'+ info.tooltip.id + '</td>'+
+            '</tr>'+
+            extra_tooltip+
+            '</tbody>'+
+            '</table>'+
+            '</div>'+
+            '</div>';
+		var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+      	var marker = new google.maps.Marker({
+        	position: info.location,
+        	icon: icon_url,
+        	map: map,
+      	});
+      	marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+      	return marker;
+    });
+}
+
+$(document).ready(function() {
+	$('#licensee').html(data.client['@id'] + " - " + data.client['@name']);
+	$('#status').html(data.summary['@status']);
+	$('#licenceType').html(data.summary['@licenceType']);
+	$('#fixedTerm').html(data['@fixedTerm']);
+	$('#licenceId').html(data.summary['@licenceId']);
+	$('#commencementDate').html(data['@commencementDate']);
+	$('#applicationId').html(data.summary['@applicationId']);
+	$('#expiryDate').html(data['@expiryDate']);
+	$('#licenceNumber').html(data.summary['@licenceNumber']);
+	$('#mrid').html(data.managementRight['@id']);
+
+	$('#spectrums').append("<tr><td>"+data.spectrums['@lowerBound']+"</td><td>"+data.spectrums['@upperBound']+"</td><td>"+data.spectrums.frequencies['@referenceFrequency']+"</td><td>"+data.spectrums.frequencies['@power']+"</td><td>"+data.spectrums.frequencies.freqEmissions['@emission']+"</td></tr>")
+
+	// for(spectrum in data.spectrums){
+	// 	$('#spectrums').append()
+	// }
+
+	$('#location').html(data.summary['@location']);
+	$('#gridReference').html(data.summary['@gridReference']);
+	
+});
+</script>
+
+{% endblock %}

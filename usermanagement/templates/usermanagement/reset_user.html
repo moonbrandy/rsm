@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Reset the Password for {{ ruser.get_full_name }}{% endblock %}
+
+{% block content %}
+<h1>Reset Password for {{ ruser.get_full_name }}</h1>
+{% if user.id == ruser.id %}
+<b>YOU</b> will be logged out when the password is reset.
+{% else %}
+{{ ruser.get_full_name }} will be logged out when the password is reset.
+{% endif %}
+
+<form action="" method="post">{% csrf_token %}
+<input class="btn btn-primary" type="submit" value="Reset users password" />
+{% endblock %}
+

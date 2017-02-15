@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block title %}Search Licence{% endblock %}
+
+{% block extrahead %}
+
+{{ form.media }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="col-md-12">
+	<form id="search_form" method="POST" onsubmit="return submitForm()">
+	    {% csrf_token %}
+	    <div class="panel-group">
+		  	<div class="panel panel-default">
+		    	<div id="search_criteria_heading" class="panel-heading">
+		      		<h2 class="panel-title">
+		        		<a data-toggle="collapse" href="#search_criteria">Search Criteria</a>
+		      		</h2>
+		    	</div>
+		    	<br>
+		    	<div id="search_criteria" class="panel-collapse collapse {% if not are_id %}in{%endif%}">
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.licenceNumber layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.applicationNumber layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.licenceId layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.managementRightId layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.fromFrequency layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' addon_after='<span>MHz</span>' %}
+				    		
+				    	</div>
+				    	<div class="col-md-2">
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.channel layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.toFrequency layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' addon_after='<span>MHz</span>' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.callSign layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+
+				    <hr>
+
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.licensee layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    		<p class="text-center">OR</p>
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.clientId layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.licenceType layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    		<p class="text-center">OR</p>
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.licenceStatus layout='horizontal' horizontal_label_class='col-md-5' horizontal_field_class='col-md-7' %}
+				    	</div>
+				    </div>
+
+				    <hr>
+
+				    <div class="form-group row">
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.transmitLocation layout='horizontal' %}
+				    	</div>
+				    	<div class="col-md-2">
+				    		<p class="text-center">OR</p>
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.receiveLocation layout='horizontal' %}
+				    	</div>
+				    </div>
+				    <div class="form-group row">
+				    	<div class="col-md-1">
+				    		<p class="text-center">OR</p>
+				    	</div>
+				    	<div class="col-md-5">
+				    		{% bootstrap_field form.locationId layout='horizontal' %}
+				    	</div>
+				    </div>
+
+				    <hr>
+
+		    	</div>
+		  	</div>
+		</div>
+
+		<div class="panel-group">
+		  	<div class="panel panel-default">
+		    	<div class="panel-heading">
+		      		<h2 id="additional_criteria_heading" class="panel-title">
+		        		<a data-toggle="collapse" href="#additional_criteria">Additional Criteria</a>
+		      		</h2>
+		    	</div>
+		    	<br>
+		    	<div id="additional_criteria" class="panel-collapse collapse">
+		    		<div class="form-group row">
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.includeAssociatedLicences layout='horizontal' %}
+				    	</div>
+				    </div>
+				    <div class="form-group row">
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.certifiedBy layout='horizontal' %}
+				    	</div>
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.dateType layout='horizontal' %}
+				    	</div>
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.fromDate layout='horizontal' %}
+				    	</div>
+				    </div>
+				    <div class="form-group row">
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.systemIdentifier layout='horizontal' %}
+				    	</div>
+				    	<div class="col-md-4">
+				    	</div>
+				    	<div class="col-md-4">
+				    		{% bootstrap_field form.toDate layout='horizontal' %}
+				    	</div>
+				    </div>
+
+		    	</div>
+
+		    </div>
+		</div>
+
+		<br>
+
+	    <div class="col-md-12">
+	    	{% buttons submit='Search Licence' reset='Cancel' %}
+	    	{% endbuttons %}
+	    </div>
+	</form>
+</div>
+
+<div class="col-md-12">
+	<div id='result_table_header'></div>
+	<table id="result_table" class="table table-hover datatable"></table>
+</div>
+
+<div id="error_message"></div>
+
+{% endblock %}
+
+{% block extrascript %}
+<!-- Include Date Range Picker -->
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+<!-- Include Data Tables -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatables.min.css' %}"/>
+<script src="{% static 'js/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.has-popover').popover({'trigger':'hover'});
+    {% if user.is_authenticated %}
+    	{% if are_id %}
+    		$('select[name=certifiedBy] option[value="{{ are_id }}"]').prop('selected', 'selected').change();
+    		submitForm();
+    	{% endif %}
+    {% endif %}
+});
+
+$('body').on('click', '[data-toggle="collapse"]', function () {
+	var collapsedId = $(this).attr('href');
+	console.log(collapsedId);
+	$(collapsedId).collapse('toggle');
+	return false;
+});
+
+function missingValue(data){
+	if(data == null){
+		return "";
+	}else{
+		return data;
+	}
+}
+
+function licenceLink(data, type, row, meta){
+    return '<a href="' + "{% url 'licence_detail' %}" +'?licenceId='+ data +'">' + data + '</a>';
+}
+
+function submitForm() {
+	var frm = $('#search_form');
+	$.ajax({
+        type: frm.attr('method'),
+        url: "{% url 'search_licence' %}",
+        data: frm.serialize(),
+        success: function (data) {
+        	$('.collapse').collapse('hide');
+        	console.log(data);
+        	console.log(data.data);
+        	$('#result_table_header').html("<h2>Seach Result</h2>");
+            $('#result_table').DataTable({
+		        processing: true,
+		        data: data.data,
+		        searching: true,
+		        ordering: true,
+		        columnDefs: [
+	                {
+	                	orderable: true,
+		                searchable: true,
+		                className: "center",
+		                targets: "_all",
+	                }
+	            ],
+		        columns: [
+		            {data: '@licenceId', title: "Licence ID", render: licenceLink},
+		            {data: '@licenceNumber', title: "Licence No.", render: missingValue},
+		            {data: '@licensee', title: "Licensee"},
+		            {data: '@channel', title: "Channel", render: missingValue},
+		            {data: '@frequency', title: "Ref.Freq. (MHz)"},
+		            {data: '@location', title: "Location"},
+		            {data: '@gridReference', title: "Grid Reference"},
+		            {data: '@licenceType', title: "Licence Type"},
+		            {data: '@status', title: "Status"},
+		        ],
+		    });
+        },
+        error: function(data) {
+            $("#error_message").html("Something went wrong!");
+        }
+    });
+    return false;
+};
+</script>
+
+{% endblock %}
